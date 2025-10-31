@@ -170,7 +170,23 @@ export default function App() {
           Reset
         </button>
 
-        <button className="flex-1 py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 outline-none focus:outline-none focus:ring-0">
+        <button 
+         onClick={async () => {
+          try {
+            const [tab] = await chrome.tabs.query({ active: true, currentWindow: true });
+            await chrome.tabs.sendMessage(tab.id, {
+              action: "analyse_page",
+              toxicMode: filters.toxic || "medium",
+              relevantMode: filters.irrelevant || "medium",
+              customFilters: customList
+            });
+            alert("Filtering started on current page!");
+          } catch (err) {
+            console.error("Failed to send message:", err);
+            alert("Error: Could not communicate with the page.");
+          }
+        }}
+        className="flex-1 py-2 rounded bg-blue-600 text-white font-medium hover:bg-blue-700 outline-none focus:outline-none focus:ring-0">
           Apply
         </button>
       </div>

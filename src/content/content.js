@@ -149,3 +149,37 @@ function filter(result, toxicMode = "medium", relevantMode = "medium") {
     if (shouldMask) maskComments(comment);
   });
 }
+
+
+chrome.runtime.onMessage.addListener(async (msg, sender, sendResponse) => {
+  if (msg.action === "analyse_page") {
+    const toxicMode = msg.toxicMode || "medium";
+    const relevantMode = msg.relevantMode || "medium";
+    const customFilters = msg.customFilters?.map(f => f.toLowerCase()) || [];
+
+    const { title, comments } = extractTitleAndComments();
+
+    const cleanComments = [];
+    for (const c of comments) {
+      const lower = c.toLowerCase();
+      const hasKeyword = customFilters.some(k => lower.includes(k));
+      // in case it's entire comment section
+      if (c.length > 500) continue;
+      if (hasKeyword) {
+        maskComments(c);
+      } else {
+        cleanComments.push(c); 
+      }
+    }
+
+    const chunks = makeChunk(cleanComments, 5);
+    for (const batch of chunks) {
+      const prompt = makePrompt(title, batch, toxicMode, relevantMode);
+      const result = await analyse(prompt);
+      filter(result, toxicMode, relevantMode);
+    }
+
+    sendResponse({ success: true });
+  }
+});
+

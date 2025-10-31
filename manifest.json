@@ -1,17 +1,18 @@
 {
   "manifest_version": 3,
-  "name": "TBA",
-  "version": "1.0",
-  "description": "TBA",
-  "permissions": [],
-  "host_permissions": [
-    "<all_urls>"
-  ],
+  "name": "Comment Filter Extension",
+  "version": "1.0.0",
+  "description": "Filter toxic or irrelevant comments on webpages",
+  "permissions": ["scripting", "storage", "activeTab"],
+  "action": {
+    "default_popup": "index.html"
+  },
   "content_scripts": [
     {
       "matches": ["<all_urls>"],
-      "js": ["content.js"],
-      "run_at": "document_idle"
+      "js": ["content/content.js"],
+      "run_at": "document_end"
     }
-  ]
+  ],
+  "host_permissions": ["<all_urls>"]
 }

@@ -1,16 +1,77 @@
-# React + Vite
+# 🛡️ PureComment - A Better Online Experience :)
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+**PureComment** is a Chrome extension that automatically filters comments for you.
 
-Currently, two official plugins are available:
+> Currently we only support **Reddit**, but we are always working on new things!
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## React Compiler
+## 🛠️ Features
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- **AI-driven Comment Filtering**  
+  Automatically detects and filters out **toxic** or **irrelevant** comments by blurring them. (Of course click to reveal anytime!)
 
-## Expanding the ESLint configuration
+- **Adjustable Sensitivity**  
+  Adjust the detection level (**Low → High**) to control how strictly comments are filtered.
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+- **Keyword Blocklist**  
+  Add your own **custom blocked words** to hide specific terms or phrases.
+
+- **Flexible Mode Control**  
+  Combine all filters or enable only the ones you need.
+
+---
+
+## 🧩 Prerequisites
+
+### Google Chrome Version
+- Install **Chrome Dev** channel (or **Canary** channel)
+- Version must be **≥ 128.0.6545.0**
+
+---
+
+## 💾 System Requirements
+
+- Minimum **22 GB** of free storage space  
+- **Note:** If available storage falls below **10 GB** after download, the model will be automatically deleted  
+- For **macOS users**: Use **Disk Utility** to check accurate free disk space
+
+---
+
+## 💡Getting Started
+
+### Enable Gemini Nano and Prompt API
+
+Before installing, make sure **Gemini Nano** and **Prompt API** are enabled in your Chrome Dev or Canary build.
+
+---
+
+### Install the Extension
+
+1. **Clone the repository**
+   ```bash
+   git clone https://github.com/yourusername/pure-comment.git
+   cd pure-comment
+2. **Build the project**
+   ```bash
+   npm run build
+
+3. **Prepare the build directory**
+
+   - Create a folder named `content` inside the `dist` directory.  
+   - Move `content.js` into the `dist/content` folder.  
+   - Copy `manifest.json` into the `dist` folder.
+
+
+4. **Load the Extension in Chrome**
+
+   - Open **Chrome Dev** or **Chrome Canary**.  
+   - Navigate to `chrome://extensions/`.  
+   - Enable **Developer mode**.  
+   - Click **“Load unpacked”** and select your `dist` folder.
+
+---
+
+## 📜 License
+
+Licensed under the **MIT License**

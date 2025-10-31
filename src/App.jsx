@@ -98,7 +98,7 @@ export default function App() {
      `;
 
   return (
-    <div className="max-w-5xl mx-auto p-8 bg-white text-gray-900 font-sans shadow-sm rounded-md">
+    <div className="w-full p-8 bg-white text-gray-900 font-sans shadow-sm rounded-md">
       {/* <h1 className="text-lg font-semibold mb-4 text-center">Filters</h1> */}
 
       {/* Toxic Filter */}
@@ -127,7 +127,7 @@ export default function App() {
       </div>
 
       {/* Irrelevant Filter */}
-      <div className="mb-8">
+      <div className="mb-6">
         <h2 className="font-semibold mb-2 text-center">Irrelevant Filter</h2>
         <div className="filter-group">
           <button
@@ -203,78 +203,80 @@ export default function App() {
         </button>
 
         {/* 展开内容 */}
+        {/*<div className="mt-3 p-4 bg-gray-50 border border-gray-200 rounded-md text-left transition-all duration-300 ease-in-out overflow-hidden">*/}
         {showCustomize && (
-          <div className="mt-3 p-4 bg-gray-50 border border-gray-200 rounded-md text-left transition-all duration-300 ease-in-out overflow-hidden">
-            {/*<p className="text-sm text-gray-700 mb-3">
-              Add your custom filter options below:
-            </p>*/}
-
-            {/* 输入框 + Add 按钮 */}
-            <div className="flex flex-col mb-3">
-              <div className="flex gap-2">
-                <input
-                  type="text"
-                  value={customValue}
-                  onChange={handleInputChange}
-                  placeholder="Enter custom keyword"
-                  className={`flex-1 px-3 py-2 text-sm border rounded focus:outline-none focus:ring-2 ${
-                    isDuplicate
-                      ? "border-red-400 focus:ring-red-300"
-                      : "border-gray-300 focus:ring-blue-400"
-                  }`}
-                />
-                <button
-                  onClick={addCustomValue}
-                  disabled={!customValue.trim() || isDuplicate}
-                  className={`px-4 py-2 text-sm font-medium rounded text-white transition-colors ${
-                    isDuplicate
-                      ? "bg-gray-400 cursor-not-allowed"
-                      : "bg-blue-600 hover:bg-blue-700"
-                  }`}
-                >
-                  Add
-                </button>
-              </div>
-
-              {/* ✅ 实时重复提示 */}
-              {isDuplicate && (
-                <p className="text-xs text-red-500 mt-1">
-                  This keyword already exists.
-                </p>
-              )}
-            </div>
-
-            {/* 圆角标签显示区 */}
-            {customList.length > 0 && (
-              <div className="flex flex-col items-center mt-3">
-                {/* 标签容器 */}
-                <div className="flex flex-wrap justify-start gap-2 max-w-full overflow-x-hidden max-h-[120px] overflow-y-auto pr-1 w-full">
-                  {customList.map((item, i) => (
-                    <div
-                      key={i}
-                      className="flex items-center gap-2 bg-gray-200 text-gray-800 text-sm px-3 py-1.5 rounded-full break-words"
-                    >
-                      <span className="truncate">{item}</span>
-                      <button
-                        onClick={() => removeItem(i)}
-                        className="text-gray-500 hover:text-gray-700 font-bold leading-none"
-                      >
-                        ×
-                      </button>
-                    </div>
-                  ))}
+          <div
+            className={`transition-all duration-300 ease-in-out overflow-hidden ${
+              showCustomize ? "max-h-96 mt-3" : "max-h-0 mt-0"
+            } bg-gray-50 border border-gray-200 rounded-md text-left`}
+          >
+            <div className="p-3">
+              {/* 输入框 + Add 按钮 */}
+              <div className="flex flex-col mb-3">
+                <div className="flex gap-2 w-full box-border">
+                  <input
+                    type="text"
+                    value={customValue}
+                    onChange={handleInputChange}
+                    placeholder="Enter custom keyword"
+                    className={`flex-1 min-w-0 px-3 py-2 text-sm border rounded focus:outline-none focus:ring-2 box-border 
+                      placeholder:text-xs
+                      ${
+                        isDuplicate
+                          ? "border-red-400 focus:ring-red-300"
+                          : "border-gray-300 focus:ring-blue-400"
+                      }`}
+                  />
+                  <button
+                    onClick={addCustomValue}
+                    disabled={!customValue.trim() || isDuplicate}
+                    className={`px-4 py-2 text-sm font-medium rounded text-white transition-colors ${
+                      isDuplicate
+                        ? "bg-gray-400 cursor-not-allowed"
+                        : "bg-blue-600 hover:bg-blue-700"
+                    }`}
+                  >
+                    Add
+                  </button>
                 </div>
 
-                {/* Clear All 按钮置底 */}
-                <button
-                  onClick={clearAllFilters}
-                  className="mt-3 px-3 py-1 text-xs text-gray-700 bg-white border border-gray-300 rounded font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400 transition-colors"
-                >
-                  Clear All
-                </button>
+                {/* 实时重复提示 */}
+                {isDuplicate && (
+                  <p className="text-xs text-red-500 mt-1">
+                    This keyword already exists.
+                  </p>
+                )}
               </div>
-            )}
 
+              {/* 圆角标签显示区 */}
+              {customList.length > 0 && (
+                <div className="flex flex-col items-center mt-3">
+                  <div className="flex flex-wrap justify-start gap-2 w-full overflow-y-auto max-h-[120px] pr-1">
+                    {customList.map((item, i) => (
+                      <div
+                        key={i}
+                        className="flex items-center gap-2 bg-gray-200 text-gray-800 text-sm px-3 py-1.5 rounded-full max-w-full break-all overflow-hidden"
+                      >
+                        <span className="whitespace-normal break-all">{item}</span>
+                        <button
+                          onClick={() => removeItem(i)}
+                          className="text-gray-500 hover:text-gray-700 font-bold leading-none"
+                        >
+                          ×
+                        </button>
+                      </div>
+                    ))}
+                  </div>
+
+                  <button
+                    onClick={clearAllFilters}
+                    className="mt-3 px-3 py-1 text-xs text-gray-700 bg-white border border-gray-300 rounded font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400 transition-colors"
+                  >
+                    Clear All
+                  </button>
+                </div>
+              )}
+            </div>
           </div>
         )}
       </div>

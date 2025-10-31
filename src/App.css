@@ -3,7 +3,7 @@
 @tailwind utilities;
 
 html, body, #root {
-  width: 400px;
+  width: 320px;
   min-height: 100%;
   margin: 0;
   padding: 0;
@@ -15,7 +15,6 @@ html, body, #root {
 #root {
   max-width: 100%;
   margin: 0 auto;
-  padding: 1rem;
   text-align: center;
 }
 

@@ -1,17 +1,16 @@
-## 🚫 Comment Blocker - A better online experience without troll :)
-Comment Blocker is a chrome extension that automatically filters the comments for you.
+# React + Vite
 
-Currently, we only support Reddit, but we are always working on new things!
+This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
-## Prerequisites
-Google Chrome Version
-- Install Chrome Dev channel (or Canary channel)
-- Version must be ≥ 128.0.6545.0
+Currently, two official plugins are available:
 
-System Requirements
-- Minimum 22 GB of free storage space
-- Note: If available storage falls below 10 GB after download, the model will be automatically deleted
-- For macOS users: Use Disk Utility to check accurate free disk space
+- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Babel](https://babeljs.io/) (or [oxc](https://oxc.rs) when used in [rolldown-vite](https://vite.dev/guide/rolldown)) for Fast Refresh
+- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
 
-## Licenses
-Under the MIT license
+## React Compiler
+
+The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+
+## Expanding the ESLint configuration
+
+If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.

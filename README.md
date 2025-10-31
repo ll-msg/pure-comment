@@ -8,7 +8,7 @@
 
 ## 🛠️ Features
 
-- **AI-driven Comment Filtering**  
+- **AI-driven (Nano Prompt API) Comment Filtering**  
   Automatically detects and filters out **toxic** or **irrelevant** comments by blurring them. (Of course click to reveal anytime!)
 
 - **Adjustable Sensitivity**  

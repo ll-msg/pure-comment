@@ -28,7 +28,6 @@ export default function App() {
   useEffect(() => {    
     if (customList.length > 0) {
       Cookies.set("customFilters", JSON.stringify(customList), { expires: 7, sameSite: "lax" });
-      console.log("cookie:", Cookies.get("customFilters"));
     } else {
       Cookies.remove("customFilters");
     }
@@ -72,7 +71,6 @@ export default function App() {
   const clearAllFilters = () => {
     setCustomList([]);
     Cookies.remove("customFilters");
-    console.log("remove cookie:", Cookies.get("customFilters"));
   };
 
   const setFilterLevel = (key, level) => {

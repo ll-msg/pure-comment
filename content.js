@@ -59,26 +59,31 @@ function makeChunk(arr, size) {
   return result;
 }
 
-function makePrompt(title, commentsBatch, mode="medium", relevance=false, toxic=false) {
-  let tasks = []
-  
-  if (relevance) tasks.push("assess how relevant each comment is to the post topic");
-  if (toxic) tasks.push("assess how toxic or offensive each comment is");
+function makeInstruction(label, mode) {
+  if (mode === "high") return `- For ${label}, be very strict; even slightly ${label === "toxicity" ? "offensive" : "off-topic"} comments should get high ratings.`;
+  if (mode === "medium") return `- For ${label}, use balanced judgment; rate normally based on the given scales.`;
+  if (mode === "low") return `- For ${label}, be lenient; only rate as high if clearly problematic.`;
+  return "";
+}
 
-  let input = "";
-  if (mode.toLowerCase() === "high") {
-    input = "- Be strict; even slightly offensive, disrespectful, or off-topic comments should get high ratings."
-  } else if (mode.toLowerCase() === "medium") {
-    input = "- Use balanced judgment; rate normally based on the given scales."
-  } else {
-    input = "- Be lenient; only rate as highly toxic or irrelevant if the comment is clearly problematic."
-  }
-  
+function makePrompt(title, commentsBatch, toxic="high", relevant="low") {
+  let tasks = [];
+
+  const assessRelevance = ["low", "medium", "high"].includes(relevant);
+  const assessToxic = ["low", "medium", "high"].includes(toxic);
+
+  if (assessRelevance) tasks.push("assess how relevant each comment is to the post topic");
+  if (assessToxic) tasks.push("assess how toxic or offensive each comment is");
+
+  const toxicInstruction = assessToxic ? makeInstruction("toxicity", toxic) : "";
+  const relevantInstruction = assessRelevance ? makeInstruction("relevance", relevant) : "";
+
   return `
       Task:
       For each comment, ${tasks.join(" and ")}.
       Rate each as one of three levels: LOW, MEDIUM, or HIGH.
-      ${input}
+      ${toxicInstruction}
+      ${relevantInstruction}
 
       Input:
       Post: "${title}"
@@ -87,9 +92,9 @@ function makePrompt(title, commentsBatch, mode="medium", relevance=false, toxic=
 
       Output (no explanation, one block per comment):
       Comment: <original comment>
-      Relevance: LOW/MEDIUM/HIGH
-      Toxicity: LOW/MEDIUM/HIGH
-    `.trim();
+      ${assessRelevance ? "Relevance: LOW/MEDIUM/HIGH\n" : ""}
+      ${assessToxic ? "Toxicity: LOW/MEDIUM/HIGH" : ""}
+  `.trim();
 }
 
 // mask blocked comments
@@ -122,25 +127,25 @@ function maskComments(comment) {
 }
 
 // mask process (main logic)
-function filter(result, mode) {
+function filter(result, toxicMode = "medium", relevantMode = "medium") {
   const pattern = /Comment:\s*([\s\S]*?)\n\s*Relevance:\s*(LOW|MEDIUM|HIGH)\s*\n\s*Toxicity:\s*(LOW|MEDIUM|HIGH)/gi;
   const matchedComments = Array.from(result.matchAll(pattern));
+
   matchedComments.forEach(c => {
     const comment = c[1].trim();
     const relevance = c[2].toUpperCase();
     const toxic = c[3].toUpperCase();
 
     let shouldMask = false;
-    if (mode === "low") {
-      shouldMask = toxic === "HIGH";
-    } else if (mode === "medium") {
-      shouldMask = toxic === "HIGH" || toxic === "MEDIUM";
-    } else if (mode === "high") {
-      shouldMask = toxic !== "LOW" || relevance === "HIGH";
-    }
 
-    if (shouldMask) {
-      maskComments(comment);
-    }
+    if (toxicMode === "low" && toxic === "HIGH") shouldMask = true;
+    else if (toxicMode === "medium" && (toxic === "HIGH" || toxic === "MEDIUM")) shouldMask = true;
+    else if (toxicMode === "high" && toxic !== "LOW") shouldMask = true;
+
+    if (relevantMode === "low" && relevance === "LOW") shouldMask = true;
+    else if (relevantMode === "medium" && relevance !== "HIGH") shouldMask = true;
+    else if (relevantMode === "high" && relevance === "HIGH") shouldMask = true;
+
+    if (shouldMask) maskComments(comment);
   });
 }

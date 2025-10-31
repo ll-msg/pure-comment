@@ -1,6 +1,6 @@
 # 🛡️ PureComment - A Better Online Experience :)
 
-**PureComment** is a Chrome extension that automatically filters comments for you.
+**PureComment** is a Chrome extension that automatically filters comments for you. Please review and acknowledge Google's Generative AI Prohibited Uses Policy before the usage.
 
 > Currently we only support **Reddit**, but we are always working on new things!
 
@@ -17,8 +17,8 @@
 - **Keyword Blocklist**  
   Add your own **custom blocked words** to hide specific terms or phrases.
 
-- **Flexible Mode Control**  
-  Combine all filters or enable only the ones you need.
+- **Flexible Control**  
+  Combine all filters or enable only the ones you need and clear all of them anytime as you wish.
 
 ---
 

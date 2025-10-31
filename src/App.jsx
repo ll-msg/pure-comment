@@ -35,19 +35,20 @@ export default function App() {
   }, [customList]);
 
   const handleInputChange = (e) => {
-    const value = e.target.value;
-    setCustomValue(value);
-
-    const exists = customList.some(
-      (item) => item.toLowerCase() === value.trim().toLowerCase()
-    );
-    setIsDuplicate(exists);
+    setCustomValue(e.target.value);
+    setIsDuplicate(false);
   };
 
   const addCustomValue = () => {
     const newValue = customValue.trim();
     if (!newValue) return;
-    if (isDuplicate) {
+
+    const exists = customList.some(
+      (item) => item.toLowerCase() === newValue.toLowerCase()
+    );
+
+    if (exists) {
+      setIsDuplicate(true);
       return;
     }
     setCustomList((prev) => [...prev, newValue]);
@@ -99,7 +100,6 @@ export default function App() {
 
   return (
     <div className="w-full p-8 bg-white text-gray-900 font-sans shadow-sm rounded-md">
-      {/* <h1 className="text-lg font-semibold mb-4 text-center">Filters</h1> */}
 
       {/* Toxic Filter */}
       <div className="mb-4">
@@ -218,8 +218,7 @@ export default function App() {
           </span>
         </button>
 
-        {/* 展开内容 */}
-        {/*<div className="mt-3 p-4 bg-gray-50 border border-gray-200 rounded-md text-left transition-all duration-300 ease-in-out overflow-hidden">*/}
+        {/* Expand Content */}
         {showCustomize && (
           <div
             className={`transition-all duration-300 ease-in-out overflow-hidden ${
@@ -227,7 +226,7 @@ export default function App() {
             } bg-gray-50 border border-gray-200 rounded-md text-left`}
           >
             <div className="p-3">
-              {/* 输入框 + Add 按钮 */}
+              {/* input & add button */}
               <div className="flex flex-col mb-3">
                 <div className="flex gap-2 w-full box-border">
                   <input
@@ -245,7 +244,7 @@ export default function App() {
                   />
                   <button
                     onClick={addCustomValue}
-                    disabled={!customValue.trim() || isDuplicate}
+                    disabled={!customValue.trim()}
                     className={`px-4 py-2 text-sm font-medium rounded text-white transition-colors ${
                       isDuplicate
                         ? "bg-gray-400 cursor-not-allowed"
@@ -256,7 +255,7 @@ export default function App() {
                   </button>
                 </div>
 
-                {/* 实时重复提示 */}
+                {/* keyword exist error */}
                 {isDuplicate && (
                   <p className="text-xs text-red-500 mt-1">
                     This keyword already exists.
@@ -264,7 +263,6 @@ export default function App() {
                 )}
               </div>
 
-              {/* 圆角标签显示区 */}
               {customList.length > 0 && (
                 <div className="flex flex-col items-center mt-3">
                   <div className="flex flex-wrap justify-start gap-2 w-full overflow-y-auto max-h-[120px] pr-1">

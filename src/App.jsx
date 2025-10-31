@@ -175,7 +175,7 @@ export default function App() {
         </button>
       </div>
 
-      {/* ✅ Customize expand */}
+      {/* Customize expand */}
       <div className="mt-4 border-t border-gray-300 pt-4">
         <button
           onClick={() => setShowCustomize((prev) => !prev)}
@@ -244,7 +244,7 @@ export default function App() {
               )}
             </div>
 
-            {/* ✅ 圆角标签显示区 */}
+            {/* 圆角标签显示区 */}
             {customList.length > 0 && (
               <div className="flex flex-col items-center mt-3">
                 {/* 标签容器 */}
@@ -265,7 +265,7 @@ export default function App() {
                   ))}
                 </div>
 
-                {/* ✅ Clear All 按钮置底 */}
+                {/* Clear All 按钮置底 */}
                 <button
                   onClick={clearAllFilters}
                   className="mt-3 px-3 py-1 text-xs text-gray-700 bg-white border border-gray-300 rounded font-medium hover:bg-blue-50 hover:text-blue-700 hover:border-blue-400 transition-colors"

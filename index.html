@@ -1,52 +1,13 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-</head>
-<body>
-  <button id="run">Start test</button>
-  <pre id="output"></pre>
-  <script src="./content.js"></script>
-
-  <script>
-    const output = document.getElementById("output");
-    const btn = document.getElementById("run");
-
-    let jsonData = null;
-
-    fetch("./reddit_comments.json")
-      .then(res => res.json())
-      .then(data => {
-        jsonData = data;
-        console.log("comments have loaded, total: ", data.comments?.length || data.length, "条");
-      })
-      .catch(err => console.error("Failed to load comments: ", err));
-
-    btn.addEventListener("click", async () => {
-      if (!jsonData) {
-        output.textContent = "Please wait until all comments have loaded...";
-        return;
-      }
-      output.textContent = "Please wait until the evaluation finished...";
-
-      const comments = jsonData.comments || jsonData;
-      const chunks = makeChunk(comments, 5); // 6-7 seconds?
-
-      let results = "";
-
-      for (let i = 0; i < chunks.length; i++) {
-        const batch = chunks[i];
-        const prompt = makePrompt(jsonData.title, batch)
-
-        output.textContent += `\n\n=== Analyzing chunk ${i + 1}/${chunks.length} ===\n`;
-
-        output.textContent += await analyse(prompt);
-
-        output.textContent += `\n--- Chunk ${i + 1} Done ---\n`;
-
-      }
-    output.textContent += `\n\nAll ${chunks.length} chunks processed successfully!`;
-  });
-  </script>
-</body>
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>extension</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
 </html>

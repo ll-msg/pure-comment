@@ -6,9 +6,12 @@ async function analyse(prompt) {
     const params = await LanguageModel.params();
     console.log(params);
 
+    const topKValue = (typeof params.defaultTopK === 'number' && params.defaultTopK > 0) ? params.defaultTopK : 40;
+
     const session = await LanguageModel.create({
       temperature: Math.max(params.defaultTemperature * 1.2, 2.0),
-      topK: params.defaultTopK,
+      topK: topKValue,
+      language: "en",
     });
     const result = await session.prompt(prompt);
     return result;
@@ -18,24 +21,30 @@ async function analyse(prompt) {
 }
 
 // find comments sections + extract post title/comments
-// TODO: how to extract content
-// TODO: how to better locate comment section
 function extractTitleAndComments() {
   const titles = [];
   const comments = [];
+  const bodies = [];
 
   document.querySelectorAll("[id*='title'], [class*='title'], [data-test*='title']").forEach((el) => {
     const text = el.textContent.replace(/\s+/g, " ").replace(/\u00a0/g, " ").trim();
     if (text) titles.push(text);
   });
 
-  document.querySelectorAll("[id*='comment'], [class*='comment'], [data-test*='comment']").forEach((el) => {
+  document.querySelectorAll('[property="schema:articleBody"]').forEach((el) => {
+    const text = el.textContent.replace(/\s+/g, " ").replace(/\u00a0/g, " ").trim();
+    if (text) bodies.push(text);
+  });
+
+  document.querySelectorAll('[slot="comment"], [id*="comment"], [class*="comment"], [data-test*="comment"]').forEach((el) => {
     const text = el.textContent.replace(/\s+/g, " ").replace(/\u00a0/g, " ").trim();
     if (text) comments.push(text);
   });
 
+  const postContent = [titles.join(" / "), bodies.join(" / ")].filter(Boolean).join(" — ");
+
   return {
-    title: titles.join(" / "),
+    title: postContent,
     comments: comments
   };
 }
@@ -50,26 +59,43 @@ function makeChunk(arr, size) {
   return result;
 }
 
+function makePrompt(title, commentsBatch, mode="medium", relevance=false, toxic=false) {
+  let tasks = []
+  
+  if (relevance) tasks.push("assess how relevant each comment is to the post topic");
+  if (toxic) tasks.push("assess how toxic or offensive each comment is");
 
-function makePrompt(title, commentsBatch) {
+  let input = "";
+  if (mode.toLowerCase() === "high") {
+    input = "- Be strict; even slightly offensive, disrespectful, or off-topic comments should get high ratings."
+  } else if (mode.toLowerCase() === "medium") {
+    input = "- Use balanced judgment; rate normally based on the given scales."
+  } else {
+    input = "- Be lenient; only rate as highly toxic or irrelevant if the comment is clearly problematic."
+  }
+  
   return `
-    Task: For each comment, decide if it is relevant to the post topic and if it is toxic.
-    Input:
-    1. Post content: ${title}
-    2. List of comments:
-    ${commentsBatch.join("\n")}
+      Task:
+      For each comment, ${tasks.join(" and ")}.
+      Rate each as one of three levels: LOW, MEDIUM, or HIGH.
+      ${input}
 
-    Output format (no explanations):
-    Comment: <comment text>
-    Relevance: Yes/No
-    Toxic: Yes/No
-  `;
+      Input:
+      Post: "${title}"
+      Comments:
+      ${commentsBatch.map((c, i) => `${i + 1}. ${c}`).join("\n")}
+
+      Output (no explanation, one block per comment):
+      Comment: <original comment>
+      Relevance: LOW/MEDIUM/HIGH
+      Toxicity: LOW/MEDIUM/HIGH
+    `.trim();
 }
 
 // mask blocked comments
 function maskComments(comment) {
   // find exact match in comment section
-  const el = Array.from(document.querySelectorAll("[id*='comment']")).find((e) => e.textContent.replace(/\s+/g, " ").trim() === comment);
+  const el = Array.from(document.querySelectorAll('[slot="comment"], [id*="comment"], [class*="comment"], [data-test*="comment"]')).find((e) => e.textContent.replace(/\s+/g, " ").trim() === comment);
   if (!el) {
     console.log(`Can't find comment ${comment}`)
     return;
@@ -96,18 +122,25 @@ function maskComments(comment) {
 }
 
 // mask process (main logic)
-// Relevance No or Toxic Yes
-function filter(result) {
-  const pattern = /Comment:\s*(.+?)\nRelevance:\s*(Yes|No)\nToxic:\s*(Yes|No)/g;
+function filter(result, mode) {
+  const pattern = /Comment:\s*([\s\S]*?)\n\s*Relevance:\s*(LOW|MEDIUM|HIGH)\s*\n\s*Toxicity:\s*(LOW|MEDIUM|HIGH)/gi;
   const matchedComments = Array.from(result.matchAll(pattern));
   matchedComments.forEach(c => {
     const comment = c[1].trim();
-    const relevance = c[2].trim().toLowerCase();
-    const toxic = c[3].trim().toLowerCase();
+    const relevance = c[2].toUpperCase();
+    const toxic = c[3].toUpperCase();
 
-    if (relevance === "no" || toxic === "yes") {
+    let shouldMask = false;
+    if (mode === "low") {
+      shouldMask = toxic === "HIGH";
+    } else if (mode === "medium") {
+      shouldMask = toxic === "HIGH" || toxic === "MEDIUM";
+    } else if (mode === "high") {
+      shouldMask = toxic !== "LOW" || relevance === "HIGH";
+    }
+
+    if (shouldMask) {
       maskComments(comment);
     }
   });
 }
-

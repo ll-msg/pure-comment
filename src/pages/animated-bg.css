@@ -1,0 +1,49 @@
+.animatedBg {
+  position: fixed;
+  inset: 0;
+  z-index: -10;
+  pointer-events: none;
+  background: #000;
+  overflow: hidden;
+}
+
+.animatedBg::before,
+.animatedBg::after {
+  content: "";
+  position: absolute;
+  inset: -20%;
+  will-change: transform;
+  filter: blur(40px);
+  opacity: 0.9;
+}
+
+.animatedBg::before {
+  background:
+    radial-gradient(600px 400px at 20% 20%, rgba(50, 53, 199, 0.35), transparent 60%),
+    radial-gradient(700px 500px at 80% 30%, rgba(134, 40, 87, 0.28), transparent 60%),
+    radial-gradient(700px 500px at 50% 80%, rgba(34, 197, 94, 0.20), transparent 60%);
+  transform: translate3d(
+    calc((var(--scroll, 0) - 0.5) * -60px),
+    calc((var(--scroll, 0) - 0.5) * 120px),
+    0
+  );
+}
+
+.animatedBg::after {
+  background:
+    radial-gradient(500px 350px at 30% 70%, rgba(56, 189, 248, 0.18), transparent 60%),
+    radial-gradient(500px 350px at 70% 60%, rgba(250, 204, 21, 0.12), transparent 60%);
+  transform: translate3d(
+    calc((var(--scroll, 0) - 0.5) * 80px),
+    calc((var(--scroll, 0) - 0.5) * -90px),
+    0
+  );
+  opacity: 0.75;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animatedBg::before,
+  .animatedBg::after {
+    transform: none !important;
+  }
+}

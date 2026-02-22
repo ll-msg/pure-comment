@@ -4,7 +4,13 @@ export default {
     "./index.html",
     "./src/**/*.{js,ts,jsx,tsx}"],
   theme: {
-    extend: {},
+    extend: {
+      fontFamily: {
+        heading: ['"Space Grotesk"', 'sans-serif'],
+        body: ['Inter', 'sans-serif'],
+        script: ['"Playfair Display"', 'serif'],
+      },
+    },
   },
   plugins: [],
 }

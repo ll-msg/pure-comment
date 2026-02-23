@@ -2,7 +2,6 @@ import { Layout, Button } from 'antd';
 import Typewriter from "typewriter-effect";
 import { FaShieldCat } from "react-icons/fa6";
 import Card, { HeaderButton, SectionTitle } from "./Card";
-import { useNavigate } from "react-router-dom";
 import Contact from './Contact';
 import AnimatedBg from './AnimatedBg';
 import './Promo.css'
@@ -10,8 +9,6 @@ import './Promo.css'
 const { Header, Content, Footer } = Layout;
 
 export default function Promo() {
-
-    const navigate = useNavigate();
 
     return (
     <Layout className="promoLayout">
@@ -50,11 +47,15 @@ export default function Promo() {
                     <p className="mt-2 text-lg text-white/50 mt-5 font-semibold">
                         Every comment you see, clearer, smarter, and under your control.
                     </p>
-                    <Button color="primary" variant="solid" className='mt-8 font-semibold' onClick={() => navigate("/contact-us")}>
+                    <Button color="primary" variant="solid" className='mt-8 font-semibold' 
+                        onClick={() => document.getElementById("contact-us")?.scrollIntoView({
+                            behavior: "smooth"
+                        })}
+                    >
                         Try It Now
                     </Button>
-                    <p className="mt-2 text-sm text-white/50 font-heading mt-5">
-                        Chrome version 133 or later required
+                    <p className="mt-2 text-xs text-white/50 font-heading mt-5">
+                        Chrome Dev/Canaray version 128 or later required
                     </p>
                 </div>
             </section>
@@ -71,7 +72,12 @@ export default function Promo() {
 
             {/* Features */}
             <section id="features" className="mx-auto max-w-6xl px-6 py-24">
-            <SectionTitle title="Features" description="Explore more with your own hands."/>
+                <SectionTitle title="Features" description="Explore more with your own hands."/>
+                <div className="grid gap-6 md:grid-cols-3">
+                    <Card step="01" title="AI-driven (Nano Prompt API) Comment Filtering" description="Automatically detects and filters out toxic or irrelevant comments by blurring them."/>
+                    <Card step="02" title="Adjustable Sensitivity" description="Adjust the detection level (Low → High) to control how strictly comments are filtered."/>
+                    <Card step="03" title="Keyword Blocklist" description="Add your own custom blocked words to hide specific terms or phrases."/>
+                </div>
             </section>
 
             {/* Contact us */}
@@ -80,7 +86,7 @@ export default function Promo() {
         </Content>
 
         <Footer className="bg-black text-white border-t border-white/10 text-center">
-            © 2025 Pure Comment
+            Made by Yanran Wang, Xinyue Zhang
         </Footer>
     </Layout>
   )
